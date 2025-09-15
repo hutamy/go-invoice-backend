@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Environment files
+.env*
+
+# Development files
+docker-compose*.yaml
+docker-compose*.yml
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+
+# Documentation
+README.md
+LICENSE
+
+# Make files
+Makefile

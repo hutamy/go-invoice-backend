@@ -1,1 +1,1 @@
-# go-invoice-backend
+# github.com/hutamy/go-invoice-backend

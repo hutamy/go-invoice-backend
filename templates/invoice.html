@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Invoice {{ .Invoice.InvoiceNumber }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --primary-color: #333;
+        --text-color: #333;
+        --light-gray: #f5f7fa;
+        --border-color: #eaedf2;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", sans-serif;
+        color: var(--text-color);
+        line-height: 1.5;
+        background-color: white;
+        padding: 40px 20px;
+      }
+
+      .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+      }
+
+      .invoice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 40px;
+      }
+
+      .invoice-title {
+        font-weight: 600;
+        font-size: 32px;
+        color: var(--primary-color);
+        margin-bottom: 5px;
+      }
+
+      .invoice-id {
+        font-size: 16px;
+        color: #666;
+      }
+
+      .invoice-dates {
+        text-align: right;
+        color: #666;
+      }
+
+      .invoice-parties {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+      }
+
+      .invoice-parties h3 {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+        margin-bottom: 10px;
+      }
+
+      .party-info {
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+
+      .invoice-table th {
+        padding: 12px 8px;
+        text-align: left;
+        background-color: var(--light-gray);
+        font-weight: 600;
+        font-size: 14px;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .invoice-table td {
+        padding: 14px 8px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .invoice-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .invoice-table th:last-child,
+      .invoice-table td:last-child {
+        text-align: right;
+      }
+
+      .invoice-totals {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 2px solid var(--light-gray);
+      }
+
+      .invoice-subtotal,
+      .invoice-tax {
+        display: flex;
+        justify-content: space-between;
+        width: 250px;
+        margin-bottom: 8px;
+        font-size: 15px;
+        color: #555;
+      }
+
+      .invoice-total {
+        display: flex;
+        justify-content: space-between;
+        width: 250px;
+        margin-top: 5px;
+        padding-top: 8px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .invoice-total-label {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .invoice-total-amount {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .invoice-notes {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+        font-size: 14px;
+        color: #666;
+      }
+
+      .bank-details {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: var(--light-gray);
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      .bank-details h4 {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+        margin-bottom: 10px;
+      }
+
+      .bank-details-grid {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 8px 16px;
+      }
+
+      .bank-details-label {
+        font-weight: 600;
+      }
+
+      @media (max-width: 768px) {
+        .invoice-header,
+        .invoice-parties {
+          flex-direction: column;
+        }
+
+        .invoice-dates,
+        .invoice-parties div:last-child {
+          margin-top: 20px;
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-container">
+      <div class="invoice-header">
+        <div>
+          <div class="invoice-title">INVOICE</div>
+          <div class="invoice-id">{{ .Invoice.InvoiceNumber }}</div>
+        </div>
+        <div class="invoice-dates">
+          <div>Issue Date: {{ .Invoice.IssueDate.Format "02 Jan 2006" }}</div>
+          <div>Due Date: {{ .Invoice.DueDate.Format "02 Jan 2006" }}</div>
+        </div>
+      </div>
+
+      <div class="invoice-parties">
+        <div>
+          <h3>From</h3>
+          <div class="party-info">
+            {{ .User.Name }}<br />
+            {{ .User.Address }} <br />
+            {{ .User.Email }}<br />
+            {{ .User.Phone }}
+          </div>
+        </div>
+        <div>
+          <h3>To</h3>
+          <div class="party-info">
+            {{ .Client.Name }} <br />
+            {{ .Client.Address }}<br />
+            {{ .Client.Email }}<br />
+            {{ .Client.Phone }}
+          </div>
+        </div>
+      </div>
+
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ range .Invoice.Items }}
+          <tr>
+            <td>{{ .Description }}</td>
+            <td>{{ .Quantity }}</td>
+            <td>IDR {{ humanize .UnitPrice }}</td>
+            <td>IDR {{ humanize .Total }}</td>
+          </tr>
+          {{ end }}
+        </tbody>
+      </table>
+
+      <div class="invoice-totals">
+        <div class="invoice-subtotal">
+          <span>Subtotal:</span>
+          <span>IDR {{ humanize .Invoice.Subtotal }}</span>
+        </div>
+        <div class="invoice-tax">
+          <span>Tax ({{ printf "%.1f" .Invoice.TaxRate }}%):</span>
+          <span>IDR {{ humanize .Invoice.Tax }}</span>
+        </div>
+        <div class="invoice-total">
+          <span class="invoice-total-label">Total:</span>
+          <span class="invoice-total-amount"
+            >IDR {{ humanize .Invoice.Total }}</span
+          >
+        </div>
+      </div>
+
+      <div class="invoice-notes">
+        <strong>Terms:</strong> {{ .Invoice.Notes }}<br />
+        <strong>Thank you</strong> for your business!
+      </div>
+
+      <div class="bank-details">
+        <h4>Bank Account Details</h4>
+        <div class="bank-details-grid">
+          <div class="bank-details-label">Bank Name:</div>
+          <div>{{ .User.BankName }}</div>
+
+          <div class="bank-details-label">Account Name:</div>
+          <div>{{ .User.BankAccountName }}</div>
+
+          <div class="bank-details-label">Account Number:</div>
+          <div>{{ .User.BankAccountNumber }}</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
