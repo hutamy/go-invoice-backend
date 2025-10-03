@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/caarlos0/env"
-	"github.com/hutamy/go-invoice-backend/models"
+	pmodel "github.com/hutamy/go-invoice-backend/internal/adapter/repository/postgres/model"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -82,10 +82,10 @@ func InitDB(dbUrl string) *gorm.DB {
 
 func migrate(db *gorm.DB) {
 	models := []interface{}{
-		&models.User{},
-		&models.Client{},
-		&models.Invoice{},
-		&models.InvoiceItem{},
+		&pmodel.User{},
+		&pmodel.Client{},
+		&pmodel.Invoice{},
+		&pmodel.InvoiceItem{},
 	}
 
 	for _, model := range models {

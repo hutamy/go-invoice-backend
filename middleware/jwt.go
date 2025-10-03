@@ -1,25 +1,25 @@
 package middleware
 
 import (
-	"net/http"
-	"strings"
+    "net/http"
+    "strings"
 
-	"github.com/hutamy/go-invoice-backend/utils"
-	"github.com/hutamy/go-invoice-backend/utils/errors"
-	"github.com/labstack/echo/v4"
+    httpresp "github.com/hutamy/go-invoice-backend/internal/transport/http/response"
+    "github.com/hutamy/go-invoice-backend/internal/adapter/security"
+    "github.com/labstack/echo/v4"
 )
 
 func JWTMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		authHeader := c.Request().Header.Get("Authorization")
 		if !strings.HasPrefix(authHeader, "Bearer ") {
-			return utils.Response(c, http.StatusUnauthorized, errors.ErrInvalidToken.Error(), nil)
+			return httpresp.Response(c, http.StatusUnauthorized, "invalid token", nil)
 		}
 
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
-		claims, err := utils.ParseJWT(tokenStr)
+		claims, err := security.JWTTokenService{}.Parse(tokenStr)
 		if err != nil {
-			return utils.Response(c, http.StatusUnauthorized, errors.ErrInvalidToken.Error(), nil)
+			return httpresp.Response(c, http.StatusUnauthorized, "invalid token", nil)
 		}
 
 		c.Set("user_id", uint(claims["user_id"].(float64)))
