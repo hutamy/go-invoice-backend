@@ -28,7 +28,6 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          cd backend
           docker build -t asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/go-invoice/github.com/hutamy/go-invoice-backend .
           docker push asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/go-invoice/github.com/hutamy/go-invoice-backend
 
