@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/hutamy/go-invoice-backend/config"
 	_ "github.com/hutamy/go-invoice-backend/docs"
 	pgrepo "github.com/hutamy/go-invoice-backend/internal/adapter/repository/postgres"
@@ -25,6 +26,14 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}
+
 func main() {
 	log.Println("Starting application...")
 
@@ -32,10 +41,14 @@ func main() {
 	log.Printf("Loaded config - Port: %d, SkipMigrate: %t", cfg.Port, cfg.SkipMigrate)
 
 	log.Println("Initializing database connection...")
-	db := config.InitDB(cfg.DatabaseURL)
+	db := config.InitDB(cfg.DatabaseURL, cfg.Schema)
 	log.Println("Database connection successful!")
 
 	e := echo.New()
+
+	// Register custom validator
+	e.Validator = &CustomValidator{validator: validator.New()}
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
